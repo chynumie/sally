@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Home') }}{% endblock %}
+
+{% block content %}
+<main>
+  <section id="intro">
+    <div class="Container">
+      <img src="{{ url_for('static', filename='images/sally.jpg') }}" alt="{{ _('display picture of sally') }}">
+    </div> 
+  </section>
+
+  <div class="sections-wrapper">
+    <section id="about">
+      <div class="Container">
+        <h1>{{ _('Machine Guide') }}</h1>
+        <p>{{ _("I'll help guide you through the saline production system!") }}</p>
+        <a href="{{ url_for('views.guide') }}" class="section-link">{{ _('Click here to know more') }}</a>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="Container">
+        <h1>{{ _('Chat with me!') }}</h1>
+        <p>{{ _('Want updates on the machine? Let\'s chat!') }}</p>
+        <a href="{{ url_for('views.chat') }}" class="section-link">{{ _('Start chatting') }}</a>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

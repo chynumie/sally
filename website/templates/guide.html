@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Machine Guide') }}{% endblock %}
+
+{% block content %}
+<div class="guide-container">
+    <h1 class="guide-title">{{ _('Machine Guide') }}</h1>
+    
+    <div class="guide-sections">
+        <!-- System Overview -->
+        <a href="{{ url_for('views.guide_overview') }}" class="guide-card">
+            <div class="guide-card-content">
+                <div class="guide-icon">🔍</div>
+                <h3>{{ _('System Overview') }}</h3>
+                <p>{{ _('Learn about the machine\'s components and basic operations') }}</p>
+            </div>
+        </a>
+
+        <!-- Operation Guide -->
+        <a href="{{ url_for('views.guide_operation') }}" class="guide-card">
+            <div class="guide-card-content">
+                <div class="guide-icon">⚙️</div>
+                <h3>{{ _('Operation Guide') }}</h3>
+                <p>{{ _('Step-by-step instructions for operating the machine') }}</p>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

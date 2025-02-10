@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="{{ session.get('language', 'en') }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"/>
+    {% block styles %}{% endblock %}  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <title>{% block title %}Home{% endblock %}</title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <div class="navbar-nav mx-auto text-center">
+                {% if user.is_authenticated %}
+                <a class="nav-item nav-link" id="home" href="/">{{ _('Home') }}</a>
+                <a class="nav-item nav-link" id="guide" href="/guide">{{ _('Machine Guide') }}</a>
+                <a class="nav-item nav-link" id="chatbot" href="/chat">{{ _('Chat with Sally') }}</a>
+                <a class="nav-item nav-link" href="{{ url_for('views.contact') }}">{{ _('Contact') }}</a>
+                <a class="nav-item nav-link" id="logout" href="/logout">{{ _('Logout') }}</a>
+                {% else %}
+                <a class="nav-item nav-link" id="login" href="/login">{{ _('Login') }}</a>
+                <a class="nav-item nav-link" id="signUp" href="/sign-up">{{ _('Sign Up') }}</a>
+                {% endif %}
+            </div>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage(this.value)">
+                    <option value="en" {% if session.get('language') == 'en' %}selected{% endif %}>EN</option>
+                    <option value="zh" {% if session.get('language') == 'zh' %}selected{% endif %}>中</option>
+                    <option value="ms" {% if session.get('language') == 'ms' %}selected{% endif %}>MS</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+  
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    {% if category == 'error' %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="container">{% block content %} {% endblock %}</div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    {% block javascript %}
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+    {% endblock %}
+  
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLocation = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-item.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentLocation) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+    <script>
+    function changeLanguage(lang) {
+        fetch('/change-language', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ language: lang })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        });
+    }
+    </script>
+
+    <style>
+    .navbar-custom {
+        background-color: #FFE6E6;
+        padding: 1rem 2rem;
+    }
+
+    .navbar-nav {
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .nav-item {
+        font-size: 1rem;
+        color: #333;
+        transition: color 0.3s;
+    }
+
+    .nav-item:hover {
+        color: #FF9AA2;
+    }
+
+    .language-selector {
+        margin-left: 1rem;
+    }
+
+    .language-selector select {
+        padding: 2px 4px;
+        border-radius: 4px;
+        border: 1px solid #FFD1D1;
+        background-color: #FFE6E6;
+        color: #333;
+        font-size: 0.8rem;
+        cursor: pointer;
+        width: 50px;
+    }
+
+    .language-selector select:focus {
+        outline: none;
+        border-color: #FFB6C1;
+    }
+
+    @media (max-width: 991px) {
+        .navbar-nav {
+            margin: 1rem 0;
+        }
+        
+        .language-selector {
+            margin: 1rem auto;
+            text-align: center;
+        }
+    }
+    </style>
+  </body>
+</html>

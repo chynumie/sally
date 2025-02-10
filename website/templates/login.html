@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Login') }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <form method="POST">
+        <h3>{{ _('Login') }}</h3>
+        <div class="form-group">
+            <label for="email">{{ _('Email Address') }}</label>
+            <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="{{ _('Enter email') }}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="password">{{ _('Password') }}</label>
+            <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="{{ _('Enter password') }}"
+            />
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">{{ _('Login') }}</button>
+    </form>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-container">
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ _(message) }}
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<style>
+.form-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-container h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.alert-container {
+    max-width: 400px;
+    margin: 1rem auto;
+    text-align: center;
+}
+
+.alert {
+    margin-bottom: 0;
+    border: none;
+    border-radius: 10px;
+}
+
+.alert-danger {
+    background-color: #FFE6E6;
+    color: #333;
+}
+
+.alert-success {
+    background-color: #E6FFE6;
+    color: #333;
+}
+
+.btn-primary {
+    background-color: #FFB6C1;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #FF9AA2;
+}
+
+.form-control {
+    border: 1px solid #FFE6E6;
+}
+
+.form-control:focus {
+    border-color: #FFB6C1;
+    box-shadow: 0 0 0 0.2rem rgba(255, 182, 193, 0.25);
+}
+</style>
+{% endblock %}

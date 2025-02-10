@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Chat with Sally') }}{% endblock %}
+
+{% block content %}
+<div class="back-button-container">
+    <a href="{{ url_for('views.home') }}" class="back-button">
+        <i class="fas fa-arrow-left"></i> {{ _('Back to Home') }}
+    </a>
+</div>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/sally.jpg') }}" alt="Sally" class="sally-avatar">
+            <div class="header-text">
+                <h2>Sally</h2>
+                <p>{{ _('Manufacturing Assistant') }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+        <div class="message sally-message">
+            <div class="message-content">
+                <img src="{{ url_for('static', filename='images/sally.jpg') }}" alt="Sally" class="message-avatar">
+                <div class="message-bubble">
+                    <strong>Sally:</strong> 
+                    {{ _('Hello! How can I help you today? 😊') }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="user-input" placeholder="{{ _('Type your message here...') }}">
+        <button id="send-button">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    function sendMessage() {
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessage('You', message, true);
+        input.value = '';
+
+        fetch('/chat/message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                addMessage('Sally', 'Sorry, there was an error processing your message.', false);
+            } else {
+                addMessage('Sally', data.response, false);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessage('Sally', 'Sorry, there was an error processing your message.', false);
+        });
+    }
+
+    function addMessage(sender, message, isUser) {
+        const chatMessages = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'sally-message'}`;
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+
+        if (!isUser) {
+            const avatar = document.createElement('img');
+            avatar.src = "{{ url_for('static', filename='images/sally.jpg') }}";
+            avatar.alt = "Sally";
+            avatar.className = 'message-avatar';
+            messageContent.appendChild(avatar);
+        }
+
+        const messageBubble = document.createElement('div');
+        messageBubble.className = 'message-bubble';
+        messageBubble.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        
+        messageContent.appendChild(messageBubble);
+        messageDiv.appendChild(messageContent);
+        chatMessages.appendChild(messageDiv);
+        
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    sendButton.addEventListener('click', sendMessage);
+});
+</script>
+
+
+<style>
+.chat-container {
+    max-width: 900px;
+    margin: 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 20px;
+    background: #FFE6E6;  /* Light pink background */
+    border-bottom: 1px solid #FFD1D1;
+    text-align: center;
+}
+
+.header-content {
+    display: inline-block;
+    text-align: center;
+}
+
+.sally-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.header-text h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.header-text p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #FFF0F0;  /* Very light pink background */
+}
+
+.message {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    border: none;  /* Remove any border */
+}
+
+.message-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: none;  /* Remove any border */
+}
+
+.message-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.message-bubble {
+    padding: 12px 16px;
+    border-radius: 15px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.user-message {
+    border: none;  /* Remove any border */
+}
+
+.user-message .message-content {
+    justify-content: flex-end;
+    border: none;  /* Remove any border */
+}
+
+.user-message .message-bubble {
+    background: #FFB6C1;
+    color: #333;
+    border-radius: 15px;
+    border-bottom-right-radius: 5px;
+    border: none;  /* Remove any border */
+    box-shadow: none;  /* Remove any shadow */
+}
+
+.sally-message .message-bubble {
+    background: white;
+    border-radius: 15px;
+    border-bottom-left-radius: 5px;
+    border: none;  /* Remove any border */
+    box-shadow: none;  /* Remove any shadow */
+}
+
+.chat-input {
+    display: flex;
+    padding: 20px;
+    background: #FFE6E6;  /* Light pink background */
+    border-top: 1px solid #FFD1D1;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #FFD1D1;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.chat-input input:focus {
+    border-color: #FFB6C1;
+}
+
+.chat-input button {
+    background: #FFB6C1;  /* Light pink button */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chat-input button:hover {
+    background: #FF9AA2;  /* Slightly darker pink on hover */
+}
+
+/* Custom scrollbar */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #FFF0F0;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #FFB6C1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #FF9AA2;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .chat-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+    }
+    
+    .chat-messages {
+        height: calc(100vh - 180px);
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+    }
+}
+
+.back-button-container {
+    max-width: 900px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #FFE6E6;
+    color: #333;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-button:hover {
+    background: #FFD1D1;
+    color: #333;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.back-button i {
+    margin-right: 8px;
+}
+
+/* Reset all message-related styles */
+.message,
+.message-content,
+.message-bubble,
+.user-message,
+.user-message .message-content,
+.user-message .message-bubble {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: none !important;
+}
+
+/* Then specifically style just what we want */
+.user-message .message-bubble {
+    background-color: #FFB6C1 !important;
+    padding: 12px 16px;
+    border-radius: 15px;
+    border-bottom-right-radius: 5px;
+    color: #333;
+    max-width: 70%;
+}
+
+.sally-message .message-bubble {
+    background-color: white !important;
+    padding: 12px 16px;
+    border-radius: 15px;
+    border-bottom-left-radius: 5px;
+    color: #333;
+    max-width: 70%;
+}
+
+.message-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.user-message .message-content {
+    justify-content: flex-end;
+}
+</style>
+{% endblock %}

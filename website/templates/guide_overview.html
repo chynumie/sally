@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block title %}{{ _('System Overview') }}{% endblock %}
+
+{% block content %}
+<div class="guide-detail-container">
+    <div class="guide-navigation">
+        <a href="{{ url_for('views.guide') }}" class="back-button">← {{ _('Back to Guide') }}</a>
+    </div>
+    
+    <div class="guide-content">
+       
+        
+        <div class="guide-grid">
+            <!-- Machine Overview Section -->
+            <section class="guide-section">
+                <h2>{{ _('System Overview') }}</h2>
+                <div class="machine-image-container">
+                    <img src="{{ url_for('static', filename='images/machine.png') }}" alt="{{ _('Saline Production Machine') }}" class="machine-image" id="machineImage">
+                </div>
+                <p>{{ _('Click on the image to view 3D model.') }}</p>
+            </section>
+
+            
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('3D Model Viewer') }}</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="viewer-container">
+                    <!-- Canvas will be inserted here -->
+                </div>
+                <div class="viewer-controls">
+                    <button id="pause-rotate" class="btn btn-custom">{{ _('Start') }}</button>
+                    <button id="reset-view" class="btn btn-custom">{{ _('Reset View') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .modal-dialog {
+        max-width: 90vw !important;
+        max-height: 90vh;
+        margin: 20px auto;
+    }
+
+    .modal-content {
+        height: auto;
+        max-height: 90vh;
+    }
+
+    .modal-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #viewer-container {
+        width: 100%;
+        height: 60vh;
+        background: linear-gradient(145deg, #ffeef1, #ffe4e9);
+        border-radius: 8px;
+    }
+
+    .viewer-controls {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .btn-custom {
+        background-color: #ff8fa3;
+        color: white;
+        border: none;
+        margin: 0 5px;
+        padding: 8px 20px;
+        border-radius: 4px;
+    }
+
+    .btn-custom:hover {
+        background-color: #ff7088;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let scene, camera, renderer, controls, model, modelContainer;
+    let isRotating = false;
+
+    // Get DOM elements
+    const img = document.querySelector('.machine-image');
+    const modal = document.getElementById('imageModal');
+    const startButton = document.getElementById('pause-rotate');
+    const resetButton = document.getElementById('reset-view');
+
+    img.addEventListener('click', function() {
+        $('#imageModal').modal('show');
+    });
+
+    $('#imageModal').on('shown.bs.modal', function () {
+        initThreeJS();
+    });
+
+    function initThreeJS() {
+        // Scene setup
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffeef1);
+
+        const container = document.getElementById('viewer-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        // Camera - Start higher
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
+        camera.position.set(0, 300, 200); // Start much higher
+        camera.lookAt(0, -200, 0); // Look down more
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
+        container.innerHTML = '';
+        container.appendChild(renderer.domElement);
+
+        // Controls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enableZoom = true;
+        controls.enablePan = true;
+        controls.panSpeed = 0.5;
+        controls.minPolarAngle = Math.PI / 2;     // 90 degrees
+        controls.maxPolarAngle = Math.PI / 2;     // 90 degrees
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+
+        // Load STL
+        const loader = new THREE.STLLoader();
+        loader.load('{{ url_for("static", filename="models/machine.stl") }}', function(geometry) {
+            console.log('Loading model...');
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xff8fa3,
+                metalness: 0.4,
+                roughness: 0.5
+            });
+            model = new THREE.Mesh(geometry, material);
+            
+            // Create a container for the model
+            modelContainer = new THREE.Group();
+            scene.add(modelContainer);
+            modelContainer.add(model);
+            
+            // Center model and move it down significantly
+            geometry.computeBoundingBox();
+            const center = geometry.boundingBox.getCenter(new THREE.Vector3());
+            model.position.sub(center);
+            modelContainer.position.y = -200; // Move much lower
+            console.log('Model position Y:', modelContainer.position.y);
+            
+            // Set initial orientation
+            model.rotation.x = -Math.PI / 2;
+            
+            const scale = 0.7;
+            model.scale.set(scale, scale, scale);
+            
+            // Position camera
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            camera.position.set(0, 300, maxDim * 2); // Much higher camera
+            camera.lookAt(0, -200, 0); // Look at lower position
+            console.log('Camera position:', camera.position);
+            
+            controls.target.set(0, -200, 0); // Update controls target to match
+            controls.update();
+            
+            animate();
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        if (modelContainer && isRotating) {
+            // Rotate only the container
+            modelContainer.rotation.y += 0.01;
+        }
+        
+        controls.update();
+        renderer.render(scene, camera);
+    }
+
+    // Button handlers
+    startButton.addEventListener('click', function() {
+        isRotating = !isRotating;
+        this.textContent = isRotating ? 'Pause' : 'Start';
+    });
+
+    resetButton.addEventListener('click', function() {
+        if (modelContainer) {
+            isRotating = false;
+            startButton.textContent = 'Start';
+            
+            modelContainer.rotation.y = 0;
+            
+            const box = new THREE.Box3().setFromObject(modelContainer);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            
+            camera.position.set(0, 300, maxDim * 2);
+            camera.lookAt(0, -200, 0);
+            
+            controls.target.set(0, -200, 0);
+            controls.update();
+        }
+    });
+
+    // Cleanup
+    $('#imageModal').on('hidden.bs.modal', function () {
+        if (renderer) {
+            renderer.dispose();
+            scene = null;
+            camera = null;
+            controls = null;
+            renderer = null;
+            model = null;
+            modelContainer = null;
+        }
+    });
+
+    // Handle resize
+    window.addEventListener('resize', function() {
+        if (renderer && camera) {
+            const container = document.getElementById('viewer-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+    });
+});
+</script>
+{% endblock %}

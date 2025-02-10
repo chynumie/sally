@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Contact Us') }}{% endblock %}
+
+{% block content %}
+<div class="guide-detail-container">
+    <div class="guide-content">
+        <div class="header-section">
+            <h1>{{ _('Contact Us') }}</h1>
+            <p class="guide-description">{{ _('Machine issues or specific questions about the machine? Fill out the form below and we\'ll get back to you as soon as possible:') }}</p>
+        </div>
+
+        <div class="contact-wrapper">
+            <!-- Contact Form -->
+            <form class="contact-form" method="POST">
+                <div class="form-group">
+                    <label for="name">{{ _('Name') }}</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">{{ _('Email') }}</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">{{ _('Subject') }}</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">{{ _('Message') }}</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+                </div>
+
+                <button type="submit" class="section-button submit-button">
+                    <span class="button-title">{{ _('Send Message') }}</span>
+                    <div class="button-arrow">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                </button>
+            </form>
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <div class="info-item">
+                    <div class="button-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>{{ _('Address') }}</h3>
+                        <p>21 Tampines Avenue 1<br>Singapore 529757</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="button-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>{{ _('Phone') }}</h3>
+                        <p>+65 6788 2000</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="button-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>{{ _('Email') }}</h3>
+                        <p>tasnym.ariesha@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

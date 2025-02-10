@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Operation Guide') }}{% endblock %}
+
+{% block content %}
+<div class="guide-detail-container">
+    <div class="guide-navigation">
+        <a href="{{ url_for('views.guide') }}" class="back-button">← {{ _('Back to Guide') }}</a>
+    </div>
+    
+    <div class="guide-content">
+        <div class="header-section">
+            <h1>{{ _('Operating Instructions') }}</h1>
+            <p class="guide-description">{{ _('Follow these step-by-step guides to operate the saline solution machine efficiently and safely.') }}</p>
+        </div>
+        
+        <div class="section-navigation">
+            <a href="{{ url_for('views.maintenance_check') }}" class="section-button">
+                <div class="button-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="button-content">
+                    <span class="button-title">{{ _('Maintenance Check') }}</span>
+                    <span class="button-description">{{ _('System preparation and initial setup procedures') }}</span>
+                </div>
+                <div class="button-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="{{ url_for('views.stock_testing') }}" class="section-button">
+                <div class="button-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <div class="button-content">
+                    <span class="button-title">{{ _('Stock Solution Testing') }}</span>
+                    <span class="button-description">{{ _('Quality control and concentration testing procedures') }}</span>
+                </div>
+                <div class="button-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="{{ url_for('views.normal_production') }}" class="section-button">
+                <div class="button-icon">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <div class="button-content">
+                    <span class="button-title">{{ _('Normal Production') }}</span>
+                    <span class="button-description">{{ _('Standard operating procedures for production') }}</span>
+                </div>
+                <div class="button-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Add Font Awesome */
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .guide-detail-container {
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 40px !important;
+        background-color: #f8f9fa !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
+
+    .guide-content {
+        background-color: white !important;
+        padding: 40px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .header-section {
+        text-align: center !important;
+        margin-bottom: 50px !important;
+        padding: 0 20px !important;
+    }
+
+    .guide-content h1 {
+        color: #2c3e50 !important;
+        margin-bottom: 20px !important;
+        font-size: 2.8rem !important;
+        font-weight: 700 !important;
+    }
+
+    .guide-description {
+        color: #546e7a !important;
+        font-size: 1.2rem !important;
+        max-width: 700px !important;
+        margin: 0 auto !important;
+        line-height: 1.6 !important;
+    }
+
+    .section-navigation {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+        gap: 30px !important;
+        padding: 20px !important;
+    }
+
+    .section-button {
+        display: flex !important;
+        align-items: center !important;
+        padding: 30px !important;
+        background-color: white !important;
+        color: #2c3e50 !important;
+        text-decoration: none !important;
+        border-radius: 16px !important;
+        transition: all 0.3s ease !important;
+        border: 2px solid #f1f1f1 !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    .section-button:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 15px 30px rgba(255, 143, 163, 0.2) !important;
+        border-color: #ff8fa3 !important;
+        background: linear-gradient(45deg, #fff5f6, white) !important;
+    }
+
+    .button-icon {
+        background-color: #fff5f6 !important;
+        color: #ff8fa3 !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+        margin-right: 20px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .button-content {
+        flex-grow: 1 !important;
+    }
+
+    .button-title {
+        display: block !important;
+        font-size: 1.3rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 8px !important;
+        color: #2c3e50 !important;
+    }
+
+    .button-description {
+        display: block !important;
+        font-size: 0.95rem !important;
+        color: #546e7a !important;
+        line-height: 1.4 !important;
+    }
+
+    .button-arrow {
+        color: #ff8fa3 !important;
+        font-size: 1.2rem !important;
+        margin-left: 20px !important;
+        opacity: 0 !important;
+        transform: translateX(-10px) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .section-button:hover .button-arrow {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+    }
+
+    .back-button {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 12px 24px !important;
+        background-color: #ff8fa3 !important;
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 12px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+        margin-bottom: 40px !important;
+        box-shadow: 0 4px 15px rgba(255, 143, 163, 0.2) !important;
+    }
+
+    .back-button:hover {
+        background-color: #ff7b85 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(255, 143, 163, 0.3) !important;
+    }
+
+    @media (max-width: 768px) {
+        .guide-detail-container {
+            padding: 20px !important;
+        }
+
+        .guide-content {
+            padding: 30px 20px !important;
+        }
+
+        .guide-content h1 {
+            font-size: 2.2rem !important;
+        }
+
+        .section-navigation {
+            grid-template-columns: 1fr !important;
+        }
+
+        .section-button {
+            padding: 20px !important;
+        }
+
+        .button-icon {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 1.2rem !important;
+        }
+
+        .button-title {
+            font-size: 1.2rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block javascript %}
+<script>
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const offset = 100; // Adjust this value to control the scroll position
+    const elementPosition = section.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+    window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+    });
+}
+</script>
+{% endblock %}

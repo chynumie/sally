@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Maintenance Check') }}{% endblock %}
+
+{% block content %}
+<div class="guide-detail-container">
+    <div class="guide-navigation">
+        <a href="{{ url_for('views.guide_operation') }}" class="back-button">← {{ _('Back to Operating Instructions') }}</a>
+    </div>
+    
+    <div class="guide-content">
+        <div class="header-section">
+            <h1>{{ _('Maintenance Check') }}</h1>
+        
+        <div class="instruction-list">
+            <ol>
+                <li>{{ _('Turn on the machine via the power supply.') }}
+                    <div class="note"><strong>{{ _('Note:') }}</strong> {{ _('The OEE "Stop Duration" will start running') }}</div>
+                    <ul>
+                        <li>{{ _('Machine automatically goes to "Stop" mode') }}</li>
+                    </ul>
+                </li>
+                <li>{{ _('Go to "Manual" mode. Empty all the water in the pipes:') }}
+                    <ul>
+                        <li>{{ _('Open all valves') }}</li>
+                        <li>{{ _('Use air pressure') }}</li>
+                    </ul>
+                    <div class="note"><strong>{{ _('Note:') }}</strong> {{ _('"Manual Duration" will start running') }}</div>
+                </li>
+                <li>{{ _('Empty all water from:') }}
+                    <ul>
+                        <li>{{ _('Mixing bin') }}</li>
+                        <li>{{ _('Stock bin') }}</li>
+                        <li>{{ _('Diluent bin') }}</li>
+                        <li>{{ _('Remember to turn off valves when emptied') }}</li>
+                    </ul>
+                </li>
+                <li>{{ _('Put machine on "Stop" mode:') }}
+                    <ul>
+                        <li>{{ _('Empty waste bin by pumping out water') }}</li>
+                        <li>{{ _('Fill water supply tank with clean water') }}</li>
+                    </ul>
+                </li>
+                <li>{{ _('Go to "Manual" mode and check all valves and mixer functionality') }}</li>
+                <li>{{ _('Return to "Main Page" → "Ideal Page" → Key in relevant values') }}</li>
+                <li>{{ _('Return to "Main Page" → "Cost Input" → Key in relevant values') }}</li>
+                <li>{{ _('Return to "Main Page" → "Sustainability" → Click "CO2" → Key in relevant values') }}</li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Override container styles for this page */
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Reset and base styles */
+    .guide-detail-container {
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 40px !important;
+        background-color: #f8f9fa !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
+
+    /* Main content area */
+    .guide-content {
+        background-color: white !important;
+        padding: 30px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Instruction boxes */
+    .instruction-list {
+        background: white !important;
+        padding: 40px 50px !important;
+        border-radius: 15px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+        margin-bottom: 40px !important;
+        font-size: 1rem !important;
+        line-height: 1.8 !important;
+        color: #2c3e50 !important;
+        text-align: left !important;
+    }
+
+    /* Numbered list */
+    .instruction-list ol {
+        counter-reset: item !important;
+        list-style-type: none !important;
+        padding-left: 0 !important;
+        margin: 0 !important;
+    }
+
+    .instruction-list ol > li {
+        position: relative !important;
+        padding-left: 50px !important;
+        margin-bottom: 30px !important;
+        counter-increment: item !important;
+    }
+
+    .instruction-list ol > li:before {
+        content: counter(item) !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        background: #ff8fa3 !important;
+        color: white !important;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Sub-lists */
+    .instruction-list ul {
+        margin: 15px 0 15px 0 !important;
+        padding: 20px 30px !important;
+        background-color: #f8f9fa !important;
+        border-radius: 10px !important;
+        list-style-type: none !important;
+    }
+
+    .instruction-list ul li {
+        position: relative !important;
+        padding-left: 25px !important;
+        margin-bottom: 12px !important;
+        color: #546e7a !important;
+    }
+
+    .instruction-list ul li:before {
+        content: "•" !important;
+        color: #ff8fa3 !important;
+        position: absolute !important;
+        left: 0 !important;
+        font-size: 1.5em !important;
+        line-height: 1 !important;
+    }
+
+    /* Note box */
+    .note {
+        margin-top: 30px !important;
+        padding: 20px 25px !important;
+        background-color: #fff5f6 !important;
+        border-left: 4px solid #ff8fa3 !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+    }
+
+    .note strong {
+        color: #ff8fa3 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Back button */
+    .back-button {
+        display: inline-block !important;
+        padding: 12px 24px !important;
+        background-color: #ff8fa3 !important;
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+        margin-bottom: 40px !important;
+    }
+
+    .back-button:hover {
+        background-color: #ff7b85 !important;
+        transform: translateY(-2px) !important;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .guide-detail-container {
+            padding: 20px !important;
+        }
+
+        .instruction-list {
+            padding: 25px !important;
+        }
+
+        .instruction-list ol > li {
+            padding-left: 40px !important;
+        }
+    }
+</style>
+{% endblock %}
